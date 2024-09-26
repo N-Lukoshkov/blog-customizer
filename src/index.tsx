@@ -1,37 +1,86 @@
 import { createRoot } from 'react-dom/client';
-import { StrictMode, CSSProperties } from 'react';
-import clsx from 'clsx';
-
-import { Article } from './components/article/Article';
-import { ArticleParamsForm } from './components/article-params-form/ArticleParamsForm';
-import { defaultArticleState } from './constants/articleProps';
+import { StrictMode, CSSProperties, FormEvent, useState } from 'react';
 
 import './styles/index.scss';
 import styles from './styles/index.module.scss';
 
-const domNode = document.getElementById('root') as HTMLDivElement;
-const root = createRoot(domNode);
+import { Article } from './components/article/Article';
+import { ArticleParamsForm } from './components/article-params-form/ArticleParamsForm';
+import {
+	ArticleStateType,
+	OptionType,
+	defaultArticleState,
+} from './constants/articleProps';
 
 const App = () => {
+	const [currentSideBarState, setCurrentSideBarState] =
+		useState<ArticleStateType>(defaultArticleState);
+	const [appliedState, setAppliedState] = useState(defaultArticleState);
+
+	const updateFontFamilyState = (option: OptionType) => {
+		setCurrentSideBarState({
+			...currentSideBarState,
+			fontFamilyOption: option,
+		});
+	};
+
+	const updateFontSizeState = (option: OptionType) => {
+		setCurrentSideBarState({ ...currentSideBarState, fontSizeOption: option });
+	};
+
+	const updateFontColorState = (option: OptionType) => {
+		setCurrentSideBarState({ ...currentSideBarState, fontColor: option });
+	};
+
+	const updateContentWidthState = (option: OptionType) => {
+		setCurrentSideBarState({ ...currentSideBarState, contentWidth: option });
+	};
+
+	const updateBackgroundColorState = (option: OptionType) => {
+		setCurrentSideBarState({ ...currentSideBarState, backgroundColor: option });
+	};
+
+	const resetToInitialState = () => {
+		setAppliedState(defaultArticleState);
+		setCurrentSideBarState(defaultArticleState);
+	};
+
+	const applyCurrentState = (event: FormEvent) => {
+		event.preventDefault();
+		setAppliedState(currentSideBarState);
+	};
+
 	return (
-		<div
-			className={clsx(styles.main)}
+		<main
+			className={styles.main}
 			style={
 				{
-					'--font-family': defaultArticleState.fontFamilyOption.value,
-					'--font-size': defaultArticleState.fontSizeOption.value,
-					'--font-color': defaultArticleState.fontColor.value,
-					'--container-width': defaultArticleState.contentWidth.value,
-					'--bg-color': defaultArticleState.backgroundColor.value,
+					'--font-family': appliedState.fontFamilyOption.value,
+					'--font-size': appliedState.fontSizeOption.value,
+					'--font-color': appliedState.fontColor.value,
+					'--container-width': appliedState.contentWidth.value,
+					'--bg-color': appliedState.backgroundColor.value,
 				} as CSSProperties
 			}>
-			<ArticleParamsForm />
+			<ArticleParamsForm
+				fontFamily={updateFontFamilyState}
+				fontSize={updateFontSizeState}
+				fontColor={updateFontColorState}
+				backgroundColor={updateBackgroundColorState}
+				contentWidth={updateContentWidthState}
+				resetButton={resetToInitialState}
+				applyButton={applyCurrentState}
+				sideBarState={currentSideBarState}
+			/>
 			<Article />
-		</div>
+		</main>
 	);
 };
 
-root.render(
+const rootElement = document.getElementById('root') as HTMLElement;
+const appRoot = createRoot(rootElement);
+
+appRoot.render(
 	<StrictMode>
 		<App />
 	</StrictMode>
