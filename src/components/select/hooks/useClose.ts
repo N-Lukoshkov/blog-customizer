@@ -1,13 +1,13 @@
 import { useEffect, useCallback } from 'react';
 
 type UseClose = {
-	isOpen: boolean;
+	isMenuOpen: boolean;
 	onChange: (newValue: boolean) => void;
 	onClose?: () => void;
 	rootRef: React.RefObject<HTMLElement>;
 };
 
-export const useClose = ({ isOpen, rootRef, onClose, onChange }: UseClose) => {
+export const useClose = ({ isMenuOpen, rootRef, onClose, onChange }: UseClose) => {
 	const handleClickOutside = useCallback(
 		(event: MouseEvent) => {
 			const { target } = event;
@@ -15,26 +15,26 @@ export const useClose = ({ isOpen, rootRef, onClose, onChange }: UseClose) => {
 				target instanceof Node &&
 				rootRef.current &&
 				!rootRef.current.contains(target);
-			if (isOutsideClick && isOpen) {
+			if (isOutsideClick && isMenuOpen) {
 				onClose?.();
 				onChange(false);
 			}
 		},
-		[isOpen, onClose, onChange, rootRef]
+		[isMenuOpen, onClose, onChange, rootRef]
 	);
 
 	const handleEscape = useCallback(
 		(e: KeyboardEvent) => {
-			if (e.key === 'Escape' && isOpen) {
+			if (e.key === 'Escape' && isMenuOpen) {
 				onClose?.();
 				onChange(false);
 			}
 		},
-		[isOpen, onClose, onChange]
+		[isMenuOpen, onClose, onChange]
 	);
 
 	useEffect(() => {
-		if (!isOpen) return;
+		if (!isMenuOpen) return;
 
 		document.addEventListener('keydown', handleEscape);
 		document.addEventListener('mousedown', handleClickOutside);
@@ -43,5 +43,5 @@ export const useClose = ({ isOpen, rootRef, onClose, onChange }: UseClose) => {
 			document.removeEventListener('keydown', handleEscape);
 			document.removeEventListener('mousedown', handleClickOutside);
 		};
-	}, [isOpen, handleEscape, handleClickOutside]);
+	}, [isMenuOpen, handleEscape, handleClickOutside]);
 };

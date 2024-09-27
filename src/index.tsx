@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import { StrictMode, CSSProperties, FormEvent, useState } from 'react';
+import { StrictMode, CSSProperties, useState } from 'react';
 
 import './styles/index.scss';
 import styles from './styles/index.module.scss';
@@ -8,47 +8,15 @@ import { Article } from './components/article/Article';
 import { ArticleParamsForm } from './components/article-params-form/ArticleParamsForm';
 import {
 	ArticleStateType,
-	OptionType,
 	defaultArticleState,
 } from './constants/articleProps';
 
 const App = () => {
-	const [currentSideBarState, setCurrentSideBarState] =
-		useState<ArticleStateType>(defaultArticleState);
 	const [appliedState, setAppliedState] = useState(defaultArticleState);
 
-	const updateFontFamilyState = (option: OptionType) => {
-		setCurrentSideBarState({
-			...currentSideBarState,
-			fontFamilyOption: option,
-		});
-	};
-
-	const updateFontSizeState = (option: OptionType) => {
-		setCurrentSideBarState({ ...currentSideBarState, fontSizeOption: option });
-	};
-
-	const updateFontColorState = (option: OptionType) => {
-		setCurrentSideBarState({ ...currentSideBarState, fontColor: option });
-	};
-
-	const updateContentWidthState = (option: OptionType) => {
-		setCurrentSideBarState({ ...currentSideBarState, contentWidth: option });
-	};
-
-	const updateBackgroundColorState = (option: OptionType) => {
-		setCurrentSideBarState({ ...currentSideBarState, backgroundColor: option });
-	};
-
-	const resetToInitialState = () => {
-		setAppliedState(defaultArticleState);
-		setCurrentSideBarState(defaultArticleState);
-	};
-
-	const applyCurrentState = (event: FormEvent) => {
-		event.preventDefault();
-		setAppliedState(currentSideBarState);
-	};
+	const handleApplySettings = (state: ArticleStateType) => {
+		setAppliedState(state);
+	}
 
 	return (
 		<main
@@ -62,16 +30,7 @@ const App = () => {
 					'--bg-color': appliedState.backgroundColor.value,
 				} as CSSProperties
 			}>
-			<ArticleParamsForm
-				fontFamily={updateFontFamilyState}
-				fontSize={updateFontSizeState}
-				fontColor={updateFontColorState}
-				backgroundColor={updateBackgroundColorState}
-				contentWidth={updateContentWidthState}
-				resetButton={resetToInitialState}
-				applyButton={applyCurrentState}
-				sideBarState={currentSideBarState}
-			/>
+			<ArticleParamsForm onApply={handleApplySettings} />
 			<Article />
 		</main>
 	);

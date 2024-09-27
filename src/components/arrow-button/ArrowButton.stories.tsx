@@ -15,7 +15,7 @@ export const ArrowButtonStory: Story = {
 			<>
 				<ArrowButton
 					onClick={() => console.log('Clicked')}
-					isOpen={false}
+					isMenuOpen={false}
 					aria-expanded='false'
 				/>
 			</>
